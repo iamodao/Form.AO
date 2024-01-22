@@ -1,2 +1,2 @@
-# Form.AO
-Form.AO is a simple web based form manager written in PHP that can be plugged in to a web project.
+# FormAO
+FormAO is a simple web-based form manager written in PHP that can be plugged into a web project.
