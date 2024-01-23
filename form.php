@@ -71,10 +71,12 @@ class oForm {
 
 
 	public static function download($file = null) {
+		self::initialize();
 		if (is_null($file) && !empty($_GET['id'])) {
 			$file = $_GET['id'];
 		}
-		if (!empty($file) && is_file(self::$storage . $file)) {
+		$file = self::$storage . $file;
+		if (!empty($file) && is_file($file)) {
 			header('Content-Type: application/octet-stream');
 			header('Content-Disposition: attachment; filename="' . basename($file) . '"');
 			header('Content-Length: ' . filesize($file));
@@ -152,11 +154,15 @@ class oForm {
 
 
 	public static function delete($file = null) {
+		self::initialize();
 		if (is_null($file) && !empty($_GET['id'])) {
 			$file = $_GET['id'];
 		}
-		if (!empty($file) && is_file(self::$storage . $file)) {
-			return unlink($file);
+		$file = self::$storage . $file;
+		if (!empty($file) && is_file($file)) {
+			unlink($file);
+			header('Location: ./');
+			exit;
 		}
 		return false;
 	}
@@ -173,9 +179,9 @@ class oForm {
 				$filename = pathinfo($file, PATHINFO_FILENAME);
 				$link .= '<span class="link">' . $sn++ . '. ';
 				$link .= '<strong>' . $filename . '</strong> → ';
-				$link .= '<a href="./?link=read?id=' . basename($file) . '" title="Read">Read</a> • ';
-				$link .= '<a href="./?link=download?id=' . basename($file) . '" title="Download">Download</a> • ';
-				$link .= '<a href="./?link=delete?id=' . basename($file) . '" class="accent" title="Delete">Delete</a>';
+				// $link .= '<a href="./?link=read&id=' . basename($file) . '" title="Read">Read</a> • ';
+				$link .= '<a href="./?link=download&id=' . basename($file) . '" title="Download">Download</a> • ';
+				$link .= '<a href="./?link=delete&id=' . basename($file) . '" class="accent" title="Delete">Delete</a>';
 				$link .= '</span>';
 			}
 			return $link;
@@ -193,11 +199,15 @@ class oForm {
 			$link = $_GET['link'];
 		}
 
-		$links = ['list', 'download'];
-		if (in_array($link, $links)) {
-			$content =  self::{$link}();
-			require __DIR__ . DS . 'view' . DS . $link . '.php';
-			return;
+		if ($link === 'download') {
+			return self::download();
+		}
+		if ($link === 'delete') {
+			return self::delete();
+		}
+		if ($link === 'list') {
+			$listing = self::listing();
+			return $listing;
 		}
 	}
 }

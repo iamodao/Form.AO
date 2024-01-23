@@ -1,4 +1,5 @@
-<?php require_once 'form.php';?>
+<?php require_once 'form.php';
+$form = oForm::frontend(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,8 +42,10 @@
 	</head>
 
 	<body>
-		<h1>The Data</h1>
-		<?php echo oForm::frontend();?>
+		<?php if (!empty($form)) {
+			echo '<h1>The Data</h1>';
+			echo $form;
+		} ?>
 	</body>
 
 </html>
